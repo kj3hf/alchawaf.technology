@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Review Application</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Review Your Application</h1>
+        <p>Step 4 of 4</p>
+        
+        <div class="review-section">
+            <h2>Personal Information</h2>
+            <div id="personalInfoReview"></div>
+        </div>
+        
+        <div class="review-section">
+            <h2>Work Experience</h2>
+            <div id="experienceReview"></div>
+        </div>
+        
+        <div class="review-section">
+            <h2>Education</h2>
+            <div id="educationReview"></div>
+        </div>
+        
+        <div class="navigation">
+            <a href="education.html" class="btn btn-secondary">Back</a>
+            <button id="submitApplication" class="btn">Submit Application</button>
+        </div>
+    </div>
+
+    <script>
+        // Load all stored data
+        document.addEventListener('DOMContentLoaded', function() {
+            const personalInfo = JSON.parse(localStorage.getItem('personalInfo') || '{}');
+            const workExperience = JSON.parse(localStorage.getItem('workExperience') || '{}');
+            const education = JSON.parse(localStorage.getItem('education') || '{}');
+            
+            // Display personal info
+            document.getElementById('personalInfoReview').innerHTML = `
+                <p><strong>Name:</strong> ${personalInfo.fullName || 'Not provided'}</p>
+                <p><strong>Email:</strong> ${personalInfo.email || 'Not provided'}</p>
+                <p><strong>Phone:</strong> ${personalInfo.phone || 'Not provided'}</p>
+                <p><strong>Position:</strong> ${personalInfo.position || 'Not provided'}</p>
+            `;
+            
+            // Display work experience
+            document.getElementById('experienceReview').innerHTML = `
+                <p><strong>Current Job:</strong> ${workExperience.currentJob || 'Not provided'}</p>
+                <p><strong>Company:</strong> ${workExperience.company || 'Not provided'}</p>
+                <p><strong>Years of Experience:</strong> ${workExperience.yearsExperience || 'Not provided'}</p>
+                <p><strong>Skills:</strong> ${workExperience.skills || 'Not provided'}</p>
+            `;
+            
+            // Display education
+            document.getElementById('educationReview').innerHTML = `
+                <p><strong>Highest Degree:</strong> ${education.highestDegree || 'Not provided'}</p>
+                <p><strong>Institution:</strong> ${education.institution || 'Not provided'}</p>
+                <p><strong>Field of Study:</strong> ${education.fieldOfStudy || 'Not provided'}</p>
+                <p><strong>Graduation Year:</strong> ${education.graduationYear || 'Not provided'}</p>
+            `;
+            
+            // Handle submission
+            document.getElementById('submitApplication').addEventListener('click', function() {
+                // In a real app, you would send this data to a server
+                alert('Application submitted successfully!');
+                localStorage.clear(); // Clear stored data
+                window.location.href = 'success.html';
+            });
+        });
+    </script>
+</body>
+</html>

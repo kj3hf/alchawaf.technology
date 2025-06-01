@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Work Experience</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Work Experience</h1>
+        <p>Step 2 of 4</p>
+        
+        <form id="experienceForm">
+            <div id="experienceFields">
+                <!-- Experience entries will be added here -->
+            </div>
+            
+            <button type="button" class="btn btn-secondary" id="addExperience">+ Add Another Job</button>
+            
+            <div class="form-group">
+                <label for="yearsExperience">Total Years of Experience*</label>
+                <input type="number" id="yearsExperience" name="yearsExperience" required min="0">
+            </div>
+            
+            <div class="form-group">
+                <label for="skills">Key Skills*</label>
+                <div id="skillsContainer">
+                    <div class="skill-input">
+                        <input type="text" class="skill" placeholder="Add a skill">
+                        <button type="button" class="remove-skill">×</button>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-secondary" id="addSkill">+ Add Skill</button>
+                <input type="hidden" id="skills" name="skills">
+            </div>
+            
+            <div class="navigation">
+                <a href="personal-info.html" class="btn btn-secondary">Back</a>
+                <button type="submit" class="btn">Next</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('experienceForm');
+            const experienceFields = document.getElementById('experienceFields');
+            const addExperienceBtn = document.getElementById('addExperience');
+            const skillsContainer = document.getElementById('skillsContainer');
+            const addSkillBtn = document.getElementById('addSkill');
+            const skillsInput = document.getElementById('skills');
+            
+            let experienceCount = 0;
+            
+            // Add first experience field by default
+            addExperienceField();
+            
+            // Add experience field
+            addExperienceBtn.addEventListener('click', addExperienceField);
+            
+            function addExperienceField() {
+                experienceCount++;
+                const field = document.createElement('div');
+                field.className = 'experience-entry';
+                field.innerHTML = `
+                    <h3>Job ${experienceCount}</h3>
+                    <div class="form-group">
+                        <label for="jobTitle${experienceCount}">Job Title</label>
+                        <input type="text" id="jobTitle${experienceCount}" name="jobTitle${experienceCount}">
+                    </div>
+                    <div class="form-group">
+                        <label for="company${experienceCount}">Company</label>
+                        <input type="text" id="company${experienceCount}" name="company${experienceCount}">
+                    </div>
+                    <div class="form-group">
+                        <label for="duration${experienceCount}">Duration (years)</label>
+                        <input type="number" id="duration${experienceCount}" name="duration${experienceCount}" min="0" step="0.5">
+                    </div>
+                    <div class="form-group">
+                        <label for="description${experienceCount}">Description</label>
+                        <textarea id="description${experienceCount}" name="description${experienceCount}"></textarea>
+                    </div>
+                `;
+                experienceFields.appendChild(field);
+            }
+            
+            // Add skill field
+            addSkillBtn.addEventListener('click', function() {
+                const skillInput = document.createElement('div');
+                skillInput.className = 'skill-input';
+                skillInput.innerHTML = `
+                    <input type="text" class="skill" placeholder="Add a skill">
+                    <button type="button" class="remove-skill">×</button>
+                `;
+                skillsContainer.appendChild(skillInput);
+                
+                // Add remove functionality
+                skillInput.querySelector('.remove-skill').addEventListener('click', function() {
+                    skillInput.remove();
+                    updateSkills();
+                });
+                
+                // Update skills when input changes
+                skillInput.querySelector('.skill').addEventListener('input', updateSkills);
+            });
+            
+            // Remove skill functionality for initial skill
+            document.querySelector('.remove-skill').addEventListener('click', function() {
+                if (skillsContainer.children.length > 1) {
+                    this.parentElement.remove();
+                    updateSkills();
+                }
+            });
+            
+            // Update skills hidden input
+            function updateSkills() {
+                const skills = [];
+                document.querySelectorAll('.skill').forEach(skill => {
+                    if (skill.value.trim()) {
+                        skills.push(skill.value.trim());
+                    }
+                });
+                skillsInput.value = skills.join(', ');
+            }
+            
+            // Form submission
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                updateSkills();
+                
+                if (!skillsInput.value) {
+                    alert('Please add at least one skill');
+                    return;
+                }
+                
+                // Collect all experience data
+                const experienceData = [];
+                for (let i = 1; i <= experienceCount; i++) {
+                    const jobTitle = document.getElementById(`jobTitle${i}`)?.value;
+                    if (jobTitle) {
+                        experienceData.push({
+                            jobTitle,
+                            company: document.getElementById(`company${i}`)?.value,
+                            duration: document.getElementById(`duration${i}`)?.value,
+                            description: document.getElementById(`description${i}`)?.value
+                        });
+                    }
+                }
+                
+                // Store data
+                const data = {
+                    experiences: experienceData,
+                    yearsExperience: document.getElementById('yearsExperience').value,
+                    skills: skillsInput.value
+                };
+                
+                localStorage.setItem('workExperience', JSON.stringify(data));
+                window.location.href = 'education.html';
+            });
+        });
+    </script>
+</body>
+</html>
